@@ -9,11 +9,11 @@ import innermoe.config as config
 
 def load_all_data(phasedata_dir):
     """
-    Load and tokenize data from all categories, merge into unified phase1/2/3.
+    Load and tokenize data from all categories, only from cat.jsonl
     """
     tokenizer = AutoTokenizer.from_pretrained(config.model_name_or_path, trust_remote_code=True)
 
-    phase1_all, phase2_all, phase3_all = [], {}, []
+    all_data = []
 
     for cat in config.categories:
         cat_dir = os.path.join(phasedata_dir, cat)
@@ -22,10 +22,10 @@ def load_all_data(phasedata_dir):
             continue
 
         # --- try to load cached pickle ---
-        pkl_path = os.path.join(cat_dir, 'phase_data.pkl')
+        pkl_path = os.path.join(cat_dir, 'all_data.pkl')
         if os.path.exists(pkl_path):
             with open(pkl_path, 'rb') as f:
-                phase1_data, phase2_data, phase3_data = pickle.load(f)
+                cat_data = pickle.load(f)
         else:
             # --- build dataset from json ---
             with open(os.path.join(cat_dir, 'cat.jsonl'), 'r') as f:
@@ -38,47 +38,19 @@ def load_all_data(phasedata_dir):
                     'responses': json_data['response'],
                     'rank': json_data['rank']
                 })
-            tokenized_raw_dataset = tokenize_data(tokenizer, raw_dataset)
-
-            with open(os.path.join(cat_dir, 'points.jsonl'), 'r') as f:
-                lines = f.readlines()
-            point_dataset = {}
-            for line in lines:
-                json_data = json.loads(line)
-                point = json_data.pop('point')
-                if point not in point_dataset.keys():
-                    point_dataset[point] = []
-                point_dataset[point].append(json_data)
-
-            tokenized_point_dataset = {
-                key: tokenize_data(tokenizer, value)
-                for key, value in point_dataset.items()
-            }
-
-            split = int(config.phase1_data_rate * len(tokenized_raw_dataset))
-            phase1_data = tokenized_raw_dataset[:split]
-            phase2_data = tokenized_point_dataset
-            phase3_data = tokenized_raw_dataset[split:]
+            cat_data = tokenize_data(tokenizer, raw_dataset)
 
             # cache for future fast loading
             with open(pkl_path, 'wb') as f:
-                pickle.dump((phase1_data, phase2_data, phase3_data), f)
+                pickle.dump(cat_data, f)
 
         # --- merge into global ---
-        phase1_all.extend(phase1_data)
-        phase3_all.extend(phase3_data)
-        for key, value in phase2_data.items():
-            if key not in phase2_all:
-                phase2_all[key] = []
-            phase2_all[key].extend(value)
+        all_data.extend(cat_data)
 
-    # shuffle merged datasets
-    random.shuffle(phase1_all)
-    for key in phase2_all.keys():
-        random.shuffle(phase2_all[key])
-    random.shuffle(phase3_all)
+    # shuffle all data
+    random.shuffle(all_data)
 
-    return phase1_all, phase2_all, phase3_all
+    return all_data
 
 def load_data(phasedata_dir):
     """

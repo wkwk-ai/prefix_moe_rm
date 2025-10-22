@@ -17,6 +17,6 @@ lora_config = LoraConfig(
             bias="none",
         )
 
-phase_lrs = [1e-7, 5e-5, 1e-6]
+learning_rate = 1e-7
 phase1_data_rate = 0.6
 val_rate = 0.3

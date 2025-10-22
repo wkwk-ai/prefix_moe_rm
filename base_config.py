@@ -1,9 +1,9 @@
 import torch
 import os
 
-model_name_or_path = "/opt/tiger/CodeIO/Qwen2.5-7B-Instruct"
+model_name_or_path = "/mnt/data/model/Qwen2.5-1.5B-Instruct"
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
 
 rawdata_dir = './Ernie-rlhf'
 os.makedirs(rawdata_dir, exist_ok=True)

@@ -53,7 +53,6 @@ def train_router(router):
     }
     steps = []
     best_acc = 0
-    no_adding = 0
 
     router.train()
     while True:
@@ -78,14 +77,7 @@ def train_router(router):
 
                 if val_acc > best_acc:
                     best_acc = val_acc
-                    no_adding = 0
                     torch.save(router, os.path.join(config.out_dir, 'best_router.pth'))
-                else:
-                    no_adding += 1
-                    if no_adding >= config.max_no_adding_times:
-                        print(f'finish training! best router acc: {best_acc}')
-                        route_dataset(router)
-                        return
             
             train_data['label'] = train_data['label'].to(config.device)
             train_data['input_ids'] = train_data['input_ids'].to(config.device)

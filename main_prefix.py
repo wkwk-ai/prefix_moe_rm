@@ -22,15 +22,10 @@ class DMoERM(nn.Module):
 
         # 初始化 Router
         self.router = Router()
-        self.router = nn.DataParallel(self.router)
         self.router.to(config.device)
         # 训练 Router
         print('-' * 15 + 'begin training router' + '-' * 15)
         train_router(self.router)
-
-        # 准备 capability point labels
-        print('-' * 15 + 'begin acquiring capability point preference labels' + '-' * 15)
-        prepare_data()
 
         # 初始化并训练唯一一个 InnerMoERM
         print('-' * 15 + 'begin training unified InnerMoERM' + '-' * 15)
