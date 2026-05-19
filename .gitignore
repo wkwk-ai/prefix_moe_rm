@@ -1,3 +1,51 @@
+# --- Python ---
 __pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.pytest_cache/
+
+# --- Editor/IDE ---
+.vscode/
+.idea/
+
+# --- Data (kept on disk, not pushed) ---
+prepare_data/Ernie-rlhf/
+prepare_data/medkgqa/
+prepare_data/mixed/
+prepare_data/results/
+
+UltraMedical/UltraMedical.csv
+UltraMedical/UltraMedical.json
+UltraMedical/UltraMedical_sampled_*.json
+UltraMedical/UltraMedical_Pref_sampled_*.json
+UltraMedical/UltraMedical_Pref/
+UltraMedical/UltraMedical_Data/
+UltraMedical/examples*.json
+UltraMedical/plot_*.png
+
+# --- Benchmarks: raw data dropped, scripts kept ---
+benchmarks/raw/MedQA-master/data_clean/
+benchmarks/raw/MedQA-master/IR/
+benchmarks/raw/MedQA-master/__MACOSX/
+benchmarks/raw/MedXpertQA/eval/data/
+benchmarks/raw/MedXpertQA/figs/
+benchmarks/raw/simple-evals/*.jsonl
+benchmarks/raw/simple-evals/mmlu.csv
+benchmarks/raw/LLMEval-Med-main/outputs/
+
+# --- Checkpoints / training artifacts ---
 results/
-Ernie-rlhf/Ernie-rlhf-train.jsonl
+Ernie-rlhf/
+
+# --- verl framework (cloned externally; patches under verl_patches/) ---
+verl/
+
+# --- Misc ---
+gg
+*.log
+wandb/
+*.tar
+*.zip
+.DS_Store

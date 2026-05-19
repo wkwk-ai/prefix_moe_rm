@@ -1,14 +1,15 @@
 import os
 from base_config import *
 
-cat_list = ['角色扮演', '闲聊', '主观知识问答', '客观知识问答', '文本创作']
+cat_list = ['L1_recall', 'L2_analysis', 'L3_decision', 'L4_synthesis']
 
 out_dir = os.path.join(out_dir, 'router')
 os.makedirs(out_dir, exist_ok=True)
 
 val_rate = 0.2
 eval_samples = 500
-max_no_adding_times = 200
+batch_size = 8
+num_epochs = 3
 steps_per_eval = 1000
 
-lr = 3e-8
+lr = 1e-5

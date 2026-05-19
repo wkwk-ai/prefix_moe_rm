@@ -7,7 +7,7 @@ from innermoe.load_data import load_all_data
 from innermoe.train_module_prefix import train_rm
 
 
-def unified_train(innerMoERM, data, router, tokenizer):
+def unified_train(innerMoERM, data, tokenizer):
     """
     Train the unified InnerMoERM in a given training phase
     """
@@ -22,14 +22,14 @@ def unified_train(innerMoERM, data, router, tokenizer):
         innerMoERM.load_state_dict(torch.load(ckpt_path, map_location=config.device))
         return
 
-    acc = train_rm(innerMoERM, data, lr, out_dir, router=router, tokenizer=tokenizer)
+    acc = train_rm(innerMoERM, data, lr, out_dir)
 
     innerMoERM.load_state_dict(torch.load(ckpt_path, map_location=config.device))
     innerMoERM = innerMoERM.to(config.device)
     print(f'finish training ! best acc: {acc}')
 
 
-def train_pipe(innerMoERM, router, tokenizer):
+def train_pipe(innerMoERM, tokenizer):
     """
     Train the unified InnerMoERM in three training phases sequentially,
     using router probabilities instead of separate models per category.
@@ -37,10 +37,10 @@ def train_pipe(innerMoERM, router, tokenizer):
     out_dir = os.path.join(config.out_dir, "unified")
     os.makedirs(out_dir, exist_ok=True)
 
-    data = load_all_data(config.phasedata_dir)
+    data = load_all_data()
 
     # Phase 1
-    unified_train(innerMoERM, data, router, tokenizer)
+    unified_train(innerMoERM, data, tokenizer)
 
 
 

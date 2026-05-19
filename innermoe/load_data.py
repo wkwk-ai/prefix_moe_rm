@@ -107,10 +107,20 @@ def tokenize_data(tokenizer, json_dataset):
         tokenized_data = {
             'input_ids': [],
             'attention_mask': [],
-            'rank': json_data['rank']
+            'rank': json_data['rank'],
+            'cognitive_level': json_data.get('cognitive_level', 'unknown'),  # 新增
+            'category': json_data.get('category', 'unknown')  # 新增
         }
+        
+        # ============ 关键修改: 处理 src 字段 ============
+        # UltraMedical 数据中 src 是列表,但只有一个元素(单轮对话)
+        if isinstance(json_data['src'], list):
+            query = json_data['src'][0] if len(json_data['src']) > 0 else json_data['src'][-1]
+        else:
+            query = json_data['src']
+        
         for response in json_data['responses']:
-            prompt = f"{user}{json_data['query']}{bot}{response}{end}"
+            prompt = f"{user}{query}{bot}{response}{end}"
 
             tokenized = tokenizer(prompt, return_tensors="pt").to(config.device)
             tokenized_data['input_ids'].append(tokenized['input_ids'])
